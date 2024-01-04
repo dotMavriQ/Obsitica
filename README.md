@@ -1,5 +1,6 @@
 # Obsitica
 <noscript><a href="https://liberapay.com/dotMavriQ/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+![obsitica logo](https://repository-images.githubusercontent.com/738920597/5a41f94a-538c-4456-ab11-da9c4c873bbc)
 ## Introduction
 Obsitica is a sophisticated script developed initially in PowerShell, with a future roadmap for Python integration. It is designed to automate the organization of your Habits, Dailies, and achieved To-Do's into Obsidian. This tool seamlessly places these entries into your Obsidian JOURNAL folder, enhancing your productivity and tracking efficiency.
 
