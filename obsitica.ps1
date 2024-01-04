@@ -2,8 +2,8 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Habitica API credentials
-$USER_ID = "4c1193fa-ded8-4c61-8034-51a51bd3edcd"
-$API_TOKEN = "5486caa7-5e62-4dc4-aa37-0340879337a1"
+$USER_ID = "your user ID"
+$API_TOKEN = "your API token"
 $API_URL = "https://habitica.com/api/v3"
 
 # Function to fetch today's completed tasks from Habitica API
