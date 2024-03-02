@@ -2,8 +2,8 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Habitica API credentials
-$USER_ID = "your user ID"
-$API_TOKEN = "your API token"
+$USER_ID = "4c1193fa-dadsadasdasdasdcd"
+$API_TOKEN = "5486dsfsdf37a1"
 $API_URL = "https://habitica.com/api/v3"
 
 # Function to fetch today's completed tasks from Habitica API
@@ -17,60 +17,78 @@ function Fetch-Tasks {
     return $response
 }
 
-# Function to parse tasks and return a summary for today
+# Function to parse tasks and return a summary for the target date(s)
 function Parse-Tasks {
-    param ($apiResponse)
-    
-    $today = (Get-Date).ToString("yyyy-MM-dd")
-    $summary = "## Achievements on $today`n"
+    param ($apiResponse, $targetDates)
 
-    # Filter and summarize clicked Habits
-    $completedHabits = $apiResponse.data | Where-Object { $_.type -eq "habit" -and $_.updatedAt.StartsWith($today) }
-    foreach ($habit in $completedHabits) {
-        $counterUp = $habit.counterUp
-        $counterDown = $habit.counterDown
-        if ($counterUp -gt 0 -or $counterDown -gt 0) {
-            $summary += "* Habit clicked: $($habit.text) - Positive: $counterUp, Negative: $counterDown`n"
+    $summaries = @()
+
+    foreach ($targetDate in $targetDates) {
+        $summary = "## Achievements on $targetDate`n"
+
+        # Filter and summarize clicked Habits
+        $completedHabits = $apiResponse.data | Where-Object { $_.type -eq "habit" -and $_.updatedAt.StartsWith($targetDate) }
+        foreach ($habit in $completedHabits) {
+            $counterUp = $habit.counterUp
+            $counterDown = $habit.counterDown
+            if ($counterUp -gt 0 -or $counterDown -gt 0) {
+                $summary += "* Habit clicked: $($habit.text) - Positive: $counterUp, Negative: $counterDown`n"
+            }
         }
-    }
 
-    # Filter and summarize completed Dailies
-    $completedDailies = $apiResponse.data | Where-Object { $_.type -eq "daily" -and $_.completed -and $_.updatedAt.StartsWith($today) }
-    if ($completedDailies) {
-        $summary += "`n## Completed Dailies`n"
-        foreach ($daily in $completedDailies) {
-            $summary += "* $($daily.text)`n"
+        # Filter and summarize completed Dailies
+        $completedDailies = $apiResponse.data | Where-Object { $_.type -eq "daily" -and $_.completed -and $_.updatedAt.StartsWith($targetDate) }
+        if ($completedDailies) {
+            $summary += "`n## Completed Dailies`n"
+            foreach ($daily in $completedDailies) {
+                $summary += "* $($daily.text)`n"
+            }
         }
-    }
 
-    # Filter and summarize completed To Do's
-    $completedTodos = $apiResponse.data | Where-Object { $_.type -eq "todo" -and $_.completed }
-    foreach ($todo in $completedTodos) {
-        $completedDate = [DateTime]::Parse($todo.dateCompleted)
-        if ($completedDate.ToString("yyyy-MM-dd") -eq $today) {
+        # Filter and summarize completed To Do's
+        $completedTodos = $apiResponse.data | Where-Object { $_.type -eq "todo" -and $_.completed -and [DateTime]::Parse($_.dateCompleted).ToString("yyyy-MM-dd") -eq $targetDate }
+        foreach ($todo in $completedTodos) {
             $summary += "* $($todo.text)`n"
         }
+
+        $summaries += $summary
     }
 
-    return $summary
+    return $summaries
 }
 
-# Function to append achievements to today's markdown file in JOURNAL
+# Function to determine the target date(s) for the markdown file
+function Get-TargetDates {
+    $currentTime = Get-Date
+    $dates = @($currentTime.ToString("yyyy-MM-dd"))
+    if ($currentTime.Hour -lt 8) {
+        $dates += $currentTime.AddDays(-1).ToString("yyyy-MM-dd")
+    }
+    return $dates
+}
+
+# Function to append achievements to the target date's markdown file in JOURNAL
 function Append-To-Markdown {
-    param ($achievementsSummary)
+    param ($achievementsSummaries, $targetDates)
 
     $journalPath = ".\JOURNAL"
-    $todayFileName = "$journalPath\" + (Get-Date).ToString("yyyy-MM-dd") + ".md"
 
-    if (Test-Path $todayFileName) {
-        # Using Out-File with encoding to ensure emojis are preserved
-        $achievementsSummary | Out-File -FilePath $todayFileName -Append -Encoding UTF8
-    } else {
-        Write-Host "No journal file found for today."
+    for ($i=0; $i -lt $targetDates.Count; $i++) {
+        $targetDate = $targetDates[$i]
+        $achievementsSummary = $achievementsSummaries[$i]
+        $targetFileName = Join-Path -Path $journalPath -ChildPath "$targetDate.md"
+
+        if (Test-Path $targetFileName) {
+            # Using Add-Content with encoding to ensure emojis are preserved
+            $achievementsSummary | Add-Content -Path $targetFileName -Encoding UTF8
+        } else {
+            Write-Host "No journal file found for target date: $targetDate."
+        }
     }
 }
 
 # Main script execution
+$targetDates = Get-TargetDates
 $apiResponse = Fetch-Tasks
-$achievementsSummary = Parse-Tasks -apiResponse $apiResponse
-Append-To-Markdown -achievementsSummary $achievementsSummary
+$achievementsSummaries = Parse-Tasks -apiResponse $apiResponse -targetDates $targetDates
+Append-To-Markdown -achievementsSummaries $achievementsSummaries -targetDates $targetDates
