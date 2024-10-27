@@ -1,0 +1,22 @@
+/* Tab container */
+.obsitica-tab-container {
+    display: flex;
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+  
+  /* Individual tabs */
+  .obsitica-tab {
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .obsitica-tab:hover {
+    background-color: var(--background-modifier-hover);
+  }
+  
+  /* Content area */
+  .obsitica-content-area {
+    padding: 10px;
+  }
+  
