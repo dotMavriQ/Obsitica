@@ -1,14 +1,16 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
-import ObsiticaPlugin from './main';
+import { App, PluginSettingTab, Setting } from "obsidian";
+import ObsiticaPlugin from "./main";
 
 export interface ObsiticaSettings {
   habiticaUserId: string;
   habiticaApiToken: string;
+  journalFolderName: string; // Added this line
 }
 
 export const DEFAULT_SETTINGS: ObsiticaSettings = {
-  habiticaUserId: '',
-  habiticaApiToken: '',
+  habiticaUserId: "",
+  habiticaApiToken: "",
+  journalFolderName: "Journal", // Added this line
 };
 
 export class ObsiticaSettingTab extends PluginSettingTab {
@@ -23,14 +25,15 @@ export class ObsiticaSettingTab extends PluginSettingTab {
     const { containerEl } = this;
 
     containerEl.empty();
-    containerEl.createEl('h2', { text: 'Obsitica Settings' });
+    containerEl.createEl("h2", { text: "Obsitica Settings" });
 
+    // Habitica User ID Setting
     new Setting(containerEl)
-      .setName('Habitica User ID')
-      .setDesc('Enter your Habitica User ID.')
+      .setName("Habitica User ID")
+      .setDesc("Enter your Habitica User ID.")
       .addText((text) =>
         text
-          .setPlaceholder('User ID')
+          .setPlaceholder("User ID")
           .setValue(this.plugin.settings.habiticaUserId)
           .onChange(async (value) => {
             this.plugin.settings.habiticaUserId = value;
@@ -38,15 +41,30 @@ export class ObsiticaSettingTab extends PluginSettingTab {
           })
       );
 
+    // Habitica API Token Setting
     new Setting(containerEl)
-      .setName('Habitica API Token')
-      .setDesc('Enter your Habitica API Token.')
+      .setName("Habitica API Token")
+      .setDesc("Enter your Habitica API Token.")
       .addText((text) =>
         text
-          .setPlaceholder('API Token')
+          .setPlaceholder("API Token")
           .setValue(this.plugin.settings.habiticaApiToken)
           .onChange(async (value) => {
             this.plugin.settings.habiticaApiToken = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    // Journal Folder Name Setting
+    new Setting(containerEl)
+      .setName("Journal Folder Name")
+      .setDesc("Specify the folder where the plugin commands can be used.")
+      .addText((text) =>
+        text
+          .setPlaceholder("Journal")
+          .setValue(this.plugin.settings.journalFolderName)
+          .onChange(async (value) => {
+            this.plugin.settings.journalFolderName = value;
             await this.plugin.saveSettings();
           })
       );

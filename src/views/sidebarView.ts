@@ -1,7 +1,7 @@
-import { ItemView, WorkspaceLeaf } from 'obsidian';
-import ObsiticaPlugin from '../main';
+import { ItemView, WorkspaceLeaf } from "obsidian";
+import ObsiticaPlugin from "../main";
 
-export const VIEW_TYPE_SIDEBAR = 'obsitica-sidebar-view';
+export const VIEW_TYPE_SIDEBAR = "obsitica-sidebar-view";
 
 export class SidebarView extends ItemView {
   private plugin: ObsiticaPlugin;
@@ -16,11 +16,11 @@ export class SidebarView extends ItemView {
   }
 
   getDisplayText() {
-    return 'Obsitica';
+    return "Obsitica";
   }
 
   getIcon() {
-    return 'calendar-with-checkmark'; // Use a suitable icon or custom icon
+    return "calendar-with-checkmark"; // Use a suitable icon or custom icon
   }
 
   async onOpen() {
@@ -28,19 +28,19 @@ export class SidebarView extends ItemView {
     container.empty();
 
     // Create tab container
-    const tabContainer = container.createDiv('obsitica-tab-container');
+    const tabContainer = container.createDiv("obsitica-tab-container");
 
     // Define tabs with emojis and views
     const tabs = [
-      { emoji: '📆', view: 'calendar' },
-      { emoji: '📝', view: 'notes' },
-      { emoji: '💡', view: 'ideas' },
+      { emoji: "📆", view: "calendar" },
+      { emoji: "📝", view: "notes" },
+      { emoji: "💡", view: "ideas" },
       // Add more tabs as needed
     ];
 
     // Create tabs
     tabs.forEach((tab) => {
-      const tabButton = tabContainer.createSpan('obsitica-tab');
+      const tabButton = tabContainer.createSpan("obsitica-tab");
       tabButton.setText(tab.emoji);
       tabButton.onClickEvent(() => {
         this.switchTab(tab.view);
@@ -48,8 +48,8 @@ export class SidebarView extends ItemView {
     });
 
     // Content area
-    const contentArea = container.createDiv('obsitica-content-area');
-    this.displayContent(contentArea, 'calendar');
+    const contentArea = container.createDiv("obsitica-content-area");
+    this.displayContent(contentArea, "calendar");
   }
 
   async onClose() {
@@ -58,7 +58,7 @@ export class SidebarView extends ItemView {
 
   private switchTab(view: string) {
     const contentArea = this.containerEl.querySelector(
-      '.obsitica-content-area'
+      ".obsitica-content-area"
     ) as HTMLElement;
     contentArea.empty();
     this.displayContent(contentArea, view);
@@ -66,17 +66,17 @@ export class SidebarView extends ItemView {
 
   private displayContent(container: HTMLElement, view: string) {
     switch (view) {
-      case 'calendar':
-        container.setText('Calendar View');
+      case "calendar":
+        container.setText("Calendar View");
         break;
-      case 'notes':
-        container.setText('Notes View');
+      case "notes":
+        container.setText("Notes View");
         break;
-      case 'ideas':
-        container.setText('Ideas View');
+      case "ideas":
+        container.setText("Ideas View");
         break;
       default:
-        container.setText('Default View');
+        container.setText("Default View");
     }
   }
 }
