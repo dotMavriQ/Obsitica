@@ -1,4 +1,17 @@
+# Node modules
 node_modules/
-dist/
+
+# Build artifacts
+main.js
+main.js.map
+styles.css
+
+# Typescript cache
+*.tsbuildinfo
+
+# OS-specific files
 .DS_Store
+
+# Logs and temporary files
 *.log
+*.tmp

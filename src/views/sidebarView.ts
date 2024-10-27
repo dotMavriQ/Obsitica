@@ -57,7 +57,9 @@ export class SidebarView extends ItemView {
   }
 
   private switchTab(view: string) {
-    const contentArea = this.containerEl.querySelector('.obsitica-content-area') as HTMLElement;
+    const contentArea = this.containerEl.querySelector(
+      '.obsitica-content-area'
+    ) as HTMLElement;
     contentArea.empty();
     this.displayContent(contentArea, view);
   }
