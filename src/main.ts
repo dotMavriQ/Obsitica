@@ -1,4 +1,11 @@
-import { App, Plugin, Notice, TFile, MarkdownView } from "obsidian";
+import {
+  App,
+  Plugin,
+  Notice,
+  TFile,
+  MarkdownView,
+  WorkspaceLeaf,
+} from "obsidian";
 import { HabiticaService } from "./habitica/habiticaService";
 import { SidebarView, VIEW_TYPE_SIDEBAR } from "./views/sidebarView";
 import {
@@ -24,16 +31,14 @@ export default class ObsiticaPlugin extends Plugin {
     this.addSettingTab(new ObsiticaSettingTab(this.app, this));
 
     // Register the sidebar view
-    this.registerView(VIEW_TYPE_SIDEBAR, (leaf) => new SidebarView(leaf, this));
+    this.registerView(
+      VIEW_TYPE_SIDEBAR,
+      (leaf: WorkspaceLeaf) => new SidebarView(leaf, this)
+    );
 
     // Activate the sidebar view
     this.app.workspace.onLayoutReady(() => {
       this.activateSidebar();
-    });
-
-    // Insert Habitica data into the daily journal
-    this.app.workspace.onLayoutReady(async () => {
-      await this.insertHabiticaDataIntoJournal();
     });
 
     // Register the command
@@ -76,43 +81,7 @@ export default class ObsiticaPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  async insertHabiticaDataIntoJournal() {
-    try {
-      const data = await this.habiticaService.getUserData();
-      await this.appendHabiticaDataToJournal(data);
-    } catch (error) {
-      new Notice("Failed to insert Habitica data. Check console for details.");
-      console.error("Error inserting Habitica data:", error);
-    }
-  }
-
-  async appendHabiticaDataToJournal(data: any) {
-    const dailyNotePath = this.getDailyNotePath();
-    const dailyNote = this.app.vault.getAbstractFileByPath(
-      dailyNotePath
-    ) as TFile | null;
-
-    if (dailyNote instanceof TFile) {
-      const content = `\n## Habitica Data\n\n\`\`\`json\n${JSON.stringify(
-        data,
-        null,
-        2
-      )}\n\`\`\`\n`;
-      await this.app.vault.append(dailyNote, content);
-      new Notice("Habitica data appended to your daily journal.");
-    } else {
-      new Notice("Daily journal not found.");
-    }
-  }
-
-  getDailyNotePath(): string {
-    const dateStr = window.moment().format("YYYY-MM-DD");
-    const journalFolderName = this.settings.journalFolderName || "Journal";
-    return `${journalFolderName}/${dateStr}.md`; // Adjust the path based on your setup
-  }
-
   async generateHabitsAndDailies() {
-    // Get the active view
     const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!activeView) {
       new Notice("Please open a Markdown file to insert Habitica data.");
@@ -125,43 +94,30 @@ export default class ObsiticaPlugin extends Plugin {
       return;
     }
 
-    const filePath = file.path;
-    const fileName = file.name;
-
-    // Get the folder name from settings and convert to lowercase
-    const journalFolderName = (
-      this.settings.journalFolderName || "Journal"
-    ).toLowerCase();
-
-    // Convert the file path to lowercase and compare
-    if (!filePath.toLowerCase().startsWith(`${journalFolderName}/`)) {
+    const journalFolderName = this.settings.journalFolderName || "Journal";
+    if (
+      !file.path.toLowerCase().startsWith(`${journalFolderName.toLowerCase()}/`)
+    ) {
       new Notice(
-        `Obsitica: This command can only be used in the ${
-          this.settings.journalFolderName || "Journal"
-        } folder.`
+        `This command can only be used in the ${journalFolderName} folder.`
       );
       return;
     }
 
-    // Check if the file name matches 'YYYY-MM-DD.md' format
     const fileNamePattern = /^\d{4}-\d{2}-\d{2}\.md$/;
-    if (!fileNamePattern.test(fileName)) {
-      new Notice(
-        "Obsitica: This command can only be used in daily journal notes."
-      );
+    if (!fileNamePattern.test(file.name)) {
+      new Notice("This command can only be used in daily journal notes.");
       return;
     }
 
-    // Check if Habitica credentials are set
     const { habiticaUserId, habiticaApiToken } = this.settings;
     if (!habiticaUserId || !habiticaApiToken) {
       new Notice(
-        "Obsitica: Please enter your Habitica credentials in the Obsitica settings."
+        "Please enter your Habitica credentials in the Obsitica settings."
       );
       return;
     }
 
-    // Proceed to fetch and insert data
     await this.insertHabitsAndDailies(activeView);
   }
 
@@ -169,46 +125,59 @@ export default class ObsiticaPlugin extends Plugin {
     try {
       const tasks = await this.habiticaService.getTasks();
 
-      // Process habits
-      const habits = tasks.filter(
-        (task) =>
-          task.type === "habit" && (task.counterUp > 0 || task.counterDown > 0)
-      );
+      const habitsOutput = tasks
+        .filter(
+          (task) =>
+            task.type === "habit" &&
+            (task.counterUp > 0 || task.counterDown > 0)
+        )
+        .map(
+          (task) =>
+            `* Habit clicked: ${task.text} - Positive: ${task.counterUp}, Negative: ${task.counterDown}`
+        )
+        .join("\n");
 
-      const habitsOutput = habits.map((task) => {
-        return `* Habit clicked: ${task.text} - Positive: ${task.counterUp}, Negative: ${task.counterDown}`;
-      });
+      const dailiesOutput = tasks
+        .filter((task) => task.type === "daily" && task.completed)
+        .map((task) => `* ${task.text}`)
+        .join("\n");
 
-      // Process dailies
-      const dailies = tasks.filter(
-        (task) => task.type === "daily" && task.completed
-      );
-
-      const dailiesOutput = dailies.map((task) => {
-        return `* ${task.text}`;
-      });
-
-      // Get today's date
       const today = window.moment().format("YYYY-MM-DD");
+      const output = `## Achievements on ${today}\n${habitsOutput}\n\n## Completed Dailies\n${dailiesOutput}`;
 
-      // Construct the output
-      const output = [
-        `## Achievements on ${today}`,
-        ...habitsOutput,
-        "",
-        "## Completed Dailies",
-        ...dailiesOutput,
-      ].join("\n");
-
-      // Insert the output into the document
       const editor = activeView.editor;
-      const cursor = editor.getCursor();
-      editor.replaceRange(output, cursor);
+      editor.replaceRange(output, editor.getCursor());
 
       new Notice("Habits and Dailies inserted successfully.");
     } catch (error) {
       new Notice("Failed to fetch Habitica tasks. Check console for details.");
       console.error("Error fetching Habitica tasks:", error);
     }
+  }
+
+  async updateStepsFrontmatter(file: TFile, newSteps: string) {
+    const content = await this.app.vault.read(file);
+    const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+    const match = content.match(frontmatterRegex);
+    let newContent;
+
+    if (match) {
+      const frontmatterText = match[1];
+      const updatedFrontmatter = frontmatterText
+        .split("\n")
+        .map((line) =>
+          line.startsWith("steps:") ? `steps: ${newSteps}` : line
+        )
+        .join("\n");
+
+      newContent = content.replace(
+        frontmatterRegex,
+        `---\n${updatedFrontmatter}\n---`
+      );
+    } else {
+      newContent = `---\nsteps: ${newSteps}\n---\n\n${content}`;
+    }
+
+    await this.app.vault.modify(file, newContent);
   }
 }

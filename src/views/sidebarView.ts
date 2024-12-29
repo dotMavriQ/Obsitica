@@ -1,5 +1,5 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
-import ObsiticaPlugin from "../main";
+import { ItemView, TFolder, TFile, WorkspaceLeaf } from "obsidian";
+import ObsiticaPlugin from "../main"; // Ensure the path matches your project structure
 
 export const VIEW_TYPE_SIDEBAR = "obsitica-sidebar-view";
 
@@ -20,36 +20,37 @@ export class SidebarView extends ItemView {
   }
 
   getIcon() {
-    return "calendar-with-checkmark"; // Use a suitable icon or custom icon
+    return "calendar-with-checkmark"; // Use a suitable icon
   }
 
   async onOpen() {
     const container = this.containerEl.children[1];
     container.empty();
 
-    // Create tab container
     const tabContainer = container.createDiv("obsitica-tab-container");
-
-    // Define tabs with emojis and views
     const tabs = [
-      { emoji: "📆", view: "calendar" },
-      { emoji: "📝", view: "notes" },
-      { emoji: "💡", view: "ideas" },
-      // Add more tabs as needed
+      { emoji: "ℹ️", view: "info" },
+      { emoji: "🔎", view: "diagnostics" },
+      { emoji: "⬆️", view: "glossary" },
+      { emoji: "👟", view: "steps" }, // Added Steps tab
     ];
 
-    // Create tabs
     tabs.forEach((tab) => {
       const tabButton = tabContainer.createSpan("obsitica-tab");
       tabButton.setText(tab.emoji);
       tabButton.onClickEvent(() => {
         this.switchTab(tab.view);
+        const allTabs = tabContainer.querySelectorAll(".obsitica-tab");
+        allTabs.forEach((el) => el.removeClass("active"));
+        tabButton.addClass("active");
       });
     });
 
-    // Content area
+    const firstTab = tabContainer.querySelector(".obsitica-tab");
+    if (firstTab) firstTab.addClass("active");
+
     const contentArea = container.createDiv("obsitica-content-area");
-    this.displayContent(contentArea, "calendar");
+    this.displayContent(contentArea, "info");
   }
 
   async onClose() {
@@ -66,17 +67,110 @@ export class SidebarView extends ItemView {
 
   private displayContent(container: HTMLElement, view: string) {
     switch (view) {
-      case "calendar":
-        container.setText("Calendar View");
+      case "info":
+        this.displayInfoTab(container);
         break;
-      case "notes":
-        container.setText("Notes View");
+      case "diagnostics":
+        this.displayDiagnosticsTab(container);
         break;
-      case "ideas":
-        container.setText("Ideas View");
+      case "glossary":
+        this.displayGlossaryTab(container);
+        break;
+      case "steps":
+        this.displayStepsTab(container);
         break;
       default:
         container.setText("Default View");
     }
+  }
+
+  private displayStepsTab(container: HTMLElement) {
+    const journalFolderName =
+      this.plugin.settings.journalFolderName || "Journal";
+    const journalFolder =
+      this.plugin.app.vault.getAbstractFileByPath(journalFolderName);
+
+    if (!journalFolder || !(journalFolder instanceof TFolder)) {
+      container.setText(`Journal folder "${journalFolderName}" not found.`);
+      return;
+    }
+
+    container.createEl("h3", { text: "Daily Steps" });
+
+    const files = journalFolder.children.filter(
+      (f) => f instanceof TFile && f.extension === "md"
+    );
+
+    // Map filenames to dates and ensure strict sorting by the filenames
+    const dateFileMap = files
+      .map((file) => {
+        const match = file.name.match(/^(\d{4})-(\d{2})-(\d{2})\.md$/); // Match YYYY-MM-DD.md
+        if (!match) return null;
+        const [_, year, month, day] = match;
+        return { dateString: `${year}-${month}-${day}`, file };
+      })
+      .filter(Boolean) as { dateString: string; file: TFile }[];
+
+    // Sort by the date strings derived from filenames
+    dateFileMap.sort((a, b) => {
+      if (a.dateString < b.dateString) return -1;
+      if (a.dateString > b.dateString) return 1;
+      return 0;
+    });
+
+    const table = container.createEl("table", { cls: "obsitica-steps-table" });
+    const thead = table.createEl("thead");
+    const headerRow = thead.createEl("tr");
+    headerRow.createEl("th", { text: "Date (YYYY/MM/DD)" });
+    headerRow.createEl("th", { text: "Steps" });
+
+    const tbody = table.createEl("tbody");
+
+    for (const { dateString, file } of dateFileMap) {
+      const metadata = this.plugin.app.metadataCache.getFileCache(file);
+      const frontmatter = metadata?.frontmatter;
+      const currentSteps = frontmatter?.steps ?? "";
+
+      const row = tbody.createEl("tr");
+      row.createEl("td", { text: dateString.replace(/-/g, "/") }); // Display in YYYY/MM/DD format
+
+      const stepsCell = row.createEl("td");
+      const input = stepsCell.createEl("input", { type: "number" });
+      if (currentSteps) {
+        input.value = currentSteps.toString();
+      }
+
+      input.addEventListener("change", async () => {
+        const newSteps = input.value.trim();
+        console.log("Updating steps for file:", file.name, "to:", newSteps);
+        await this.plugin.updateStepsFrontmatter(file, newSteps);
+      });
+    }
+  }
+
+  private displayInfoTab(container: HTMLElement) {
+    const infoSection = container.createDiv("obsitica-info-section");
+    infoSection.createEl("h3", { text: "Obsitica Plugin" });
+    const pluginVersion = this.plugin.manifest.version;
+    infoSection.createEl("p", { text: `Version: ${pluginVersion}` });
+    infoSection.createEl("h4", { text: "Available Shortcuts" });
+    const shortcutsList = infoSection.createEl("ul");
+    shortcutsList.createEl("li", {
+      text: "Generate Habits & Dailies: Ctrl+Shift+H",
+    });
+    infoSection.createEl("hr");
+    infoSection.createEl("p", { text: "Thank you for using Obsitica!" });
+  }
+
+  private displayDiagnosticsTab(container: HTMLElement) {
+    container.createEl("p", {
+      text: "Data Quality Diagnostics will be implemented soon.",
+    });
+  }
+
+  private displayGlossaryTab(container: HTMLElement) {
+    container.createEl("p", {
+      text: "Frontmatter Glossary will be implemented soon.",
+    });
   }
 }
