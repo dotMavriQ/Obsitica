@@ -1,0 +1,915 @@
+/* Home tab logo and buttons styling */
+.habsiad-logo-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.habsiad-logo {
+  width: 120px;
+  height: 120px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.habsiad-version {
+  text-align: center;
+  margin: 10px 0;
+  font-weight: 500;
+  color: var(--text-accent);
+}
+
+.habsiad-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.habsiad-action-button {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.habsiad-action-button:hover {
+  background-color: var(--interactive-accent-hover);
+  transform: translateY(-1px);
+}
+
+.habsiad-action-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive design for smaller viewports */
+@media (max-width: 300px) {
+  .habsiad-logo {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .habsiad-action-button {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+/* Tab container */
+.habsiad-tab-container,
+.obsitica-tab-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 2px solid var(--background-modifier-border);
+  background-color: var(--background-secondary);
+  border-radius: 8px 8px 0 0;
+  padding: 8px;
+  margin-bottom: 2px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Individual tabs */
+.habsiad-tab,
+.obsitica-tab {
+  flex: 0 0 calc(33.333% - 8px); /* 3 tabs per row with gap */
+  min-width: 60px;
+  max-width: 120px;
+  padding: 12px 8px;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  color: var(--text-muted);
+  position: relative;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .habsiad-tab,
+  .obsitica-tab {
+    flex: 0 0 calc(33.333% - 6px);
+    min-width: 50px;
+    max-width: 100px;
+    padding: 10px 6px;
+    font-size: 16px;
+  }
+  
+  .habsiad-tab-container,
+  .obsitica-tab-container {
+    gap: 3px;
+    padding: 6px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .habsiad-tab,
+  .obsitica-tab {
+    flex: 0 0 calc(33.333% - 4px);
+    min-width: 40px;
+    max-width: 80px;
+    padding: 8px 4px;
+    font-size: 14px;
+  }
+  
+  .habsiad-tab-container,
+  .obsitica-tab-container {
+    gap: 2px;
+    padding: 4px;
+  }
+}
+
+.habsiad-tab:hover,
+.obsitica-tab:hover {
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+  transform: translateY(-2px);
+  border-color: var(--interactive-accent);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Active tab styling */
+.habsiad-tab.active,
+.obsitica-tab.active {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Enhanced active tab indicator */
+.habsiad-tab.active::after,
+.obsitica-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: var(--text-on-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--text-on-accent);
+}
+
+/* Content area */
+.habsiad-content-area,
+.obsitica-content-area {
+  padding: 15px;
+  background-color: var(--background-primary);
+  border-radius: 0 0 8px 8px;
+  min-height: 200px;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state for content area */
+.habsiad-content-area.loading,
+.obsitica-content-area.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.obsitica-steps-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.obsitica-steps-table th,
+.obsitica-steps-table td {
+  border: 1px solid var(--background-modifier-border);
+  padding: 8px;
+  text-align: left;
+}
+
+.obsitica-steps-table th {
+  background-color: var(--background-modifier-accent);
+}
+
+/* Data Quality Diagnostics Table Styling */
+.habsiad-diagnostics-table,
+.obsitica-diagnostics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.habsiad-diagnostics-table th, 
+.habsiad-diagnostics-table td,
+.obsitica-diagnostics-table th, 
+.obsitica-diagnostics-table td {
+  padding: 6px 8px;
+  text-align: center;
+  border: 1px solid var(--background-modifier-border);
+}
+
+.habsiad-diagnostics-table th,
+.obsitica-diagnostics-table th {
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  font-weight: bold;
+  border-bottom: 2px solid var(--background-modifier-border);
+}
+
+.habsiad-diagnostics-table tr:nth-child(even) td,
+.obsitica-diagnostics-table tr:nth-child(even) td {
+  background-color: var(--background-modifier-form-field);
+}
+
+.habsiad-diagnostics-table tr:nth-child(odd) td,
+.obsitica-diagnostics-table tr:nth-child(odd) td {
+  background-color: var(--background-primary);
+}
+
+/* Clickable elements in diagnostics table */
+.habsiad-diagnostics-table a,
+.obsitica-diagnostics-table a {
+  cursor: pointer;
+  color: var(--text-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.habsiad-diagnostics-table a:hover,
+.obsitica-diagnostics-table a:hover {
+  color: var(--text-accent-hover);
+  text-decoration: underline;
+}
+
+/* Emoji spans that are clickable */
+.habsiad-diagnostics-table span[style*="cursor: pointer"],
+.obsitica-diagnostics-table span[style*="cursor: pointer"],
+.habsiad-diagnostics-table .emoji-indicator,
+.obsitica-diagnostics-table .emoji-indicator {
+  cursor: pointer !important;
+  transition: transform 0.2s ease;
+}
+
+.habsiad-diagnostics-table span[style*="cursor: pointer"]:hover,
+.obsitica-diagnostics-table span[style*="cursor: pointer"]:hover,
+.habsiad-diagnostics-table .emoji-indicator:hover,
+.obsitica-diagnostics-table .emoji-indicator:hover {
+  transform: scale(1.2);
+}
+
+/* Row hover effect */
+.habsiad-diagnostics-table tbody tr:hover td,
+.obsitica-diagnostics-table tbody tr:hover td {
+  background-color: var(--background-modifier-hover);
+  transition: background-color 0.2s ease;
+}
+
+/* Sync Button Styling */
+.obsitica-sync-button {
+  padding: 8px 16px;
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 10px 0;
+  transition: background-color 0.2s ease;
+}
+
+.obsitica-sync-button:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+/* Enhanced cursor styles for interactive elements */
+
+/* General clickable elements */
+.habsiad-tab,
+.obsitica-tab,
+.habsiad-sync-button,
+.obsitica-sync-button,
+button,
+[role="button"] {
+  cursor: pointer !important;
+}
+
+/* Glossary table interactive elements */
+.habsiad-glossary-table button,
+.obsitica-glossary-table button,
+.habsiad-glossary-table input,
+.obsitica-glossary-table input {
+  cursor: pointer;
+}
+
+.habsiad-glossary-table input[type="text"] {
+  cursor: text;
+}
+
+/* Table rows that might be clickable */
+.habsiad-diagnostics-table tbody tr:hover,
+.obsitica-diagnostics-table tbody tr:hover {
+  background-color: var(--background-modifier-hover);
+  transition: background-color 0.2s ease;
+}
+
+/* Star and emoji indicators */
+.habsiad-diagnostics-table .star-link,
+.obsitica-diagnostics-table .star-link,
+.habsiad-diagnostics-table .emoji-indicator,
+.obsitica-diagnostics-table .emoji-indicator {
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.habsiad-diagnostics-table .star-link:hover,
+.obsitica-diagnostics-table .star-link:hover {
+  filter: brightness(1.3);
+  transform: scale(1.1);
+}
+
+/* Date links in first column */
+.habsiad-diagnostics-table td:first-child a,
+.obsitica-diagnostics-table td:first-child a {
+  cursor: pointer !important;
+  font-weight: 500;
+}
+
+.habsiad-diagnostics-table td:first-child a:hover,
+.obsitica-diagnostics-table td:first-child a:hover {
+  background-color: var(--background-modifier-hover);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* Tooltip enhancement for hoverable elements */
+[title] {
+  cursor: help;
+  position: relative;
+}
+
+/* Add visual feedback for elements with tooltips */
+[title]:hover {
+  text-shadow: 0 0 2px var(--text-accent);
+}
+
+/* Improved hover effects for non-active tabs */
+.habsiad-tab:not(.active):hover,
+.obsitica-tab:not(.active):hover {
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--interactive-accent);
+}
+
+/* Focus styles for accessibility */
+.habsiad-tab:focus,
+.obsitica-tab:focus {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+/* Frontmatter Glossary enhancements */
+.clickable-frontmatter-key {
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.clickable-frontmatter-key:hover {
+  background-color: var(--background-modifier-hover);
+  transform: scale(1.02);
+}
+
+.clickable-frontmatter-key:active {
+  transform: scale(0.98);
+}
+
+/* Styling for locked input fields */
+.habsiad-glossary-table input:disabled,
+.obsitica-glossary-table input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Enhanced tooltip styling */
+.clickable-frontmatter-key[title]:hover {
+  position: relative;
+}
+
+.clickable-frontmatter-key[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--background-tooltip);
+  color: var(--text-on-accent);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInTooltip 0.3s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Protected entries in frontmatter glossary */
+.protected-entry {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: var(--background-modifier-border) !important;
+  color: var(--text-muted) !important;
+}
+
+.protected-entry:hover {
+  background-color: var(--background-modifier-border) !important;
+  transform: none !important;
+}
+
+/* Alcohol tab specific styles */
+.habsiad-alcohol-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.habsiad-alcohol-table th,
+.habsiad-alcohol-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.habsiad-alcohol-table th {
+  background-color: var(--background-secondary);
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.habsiad-clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.habsiad-clickable-row:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.habsiad-date-link {
+  color: var(--text-accent);
+  font-weight: 500;
+}
+
+.habsiad-alcohol-emojis {
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.habsiad-tab-description {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+}
+
+.habsiad-no-data {
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+}
+
+.habsiad-error-message {
+  color: var(--text-error);
+  font-weight: 500;
+  padding: 10px;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+  border-left: 4px solid var(--text-error);
+}
+
+/* Labels tab specific styles */
+.labels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.label-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background-color: var(--background-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 60px;
+}
+
+.label-button:hover {
+  background-color: var(--background-modifier-hover);
+  border-color: var(--text-accent);
+  transform: translateY(-1px);
+}
+
+.label-emoji {
+  font-size: 24px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.label-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.labels-summary {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: var(--background-secondary);
+  border-radius: 6px;
+  border-left: 3px solid var(--text-accent);
+}
+
+.summary-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+  background-color: var(--background-secondary);
+  border-radius: 6px;
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-error);
+  background-color: var(--background-secondary);
+  border-radius: 6px;
+  border-left: 3px solid var(--text-error);
+}
+
+/* Detail view styles for labels */
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-button {
+  padding: 6px 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: var(--background-modifier-hover);
+  border-color: var(--text-accent);
+}
+
+.label-files-container {
+  margin: 16px 0;
+}
+
+.files-header {
+  margin-bottom: 12px;
+  color: var(--text-normal);
+  font-size: 16px;
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-item {
+  padding: 12px;
+  background-color: var(--background-secondary);
+  border-radius: 6px;
+  border-left: 3px solid var(--text-accent);
+}
+
+.date-link-button {
+  background: none;
+  border: none;
+  color: var(--text-accent);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.date-link-button:hover {
+  color: var(--text-accent-hover);
+}
+
+.occurrences-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.occurrence-item {
+  background-color: var(--background-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-monospace);
+  font-size: 14px;
+  color: var(--text-muted);
+  border: 1px solid var(--background-modifier-border);
+}
+
+/* Logs tab specific styles */
+.logs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.log-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  border: 2px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background-color: var(--background-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 80px;
+}
+
+.log-button:hover {
+  background-color: var(--background-modifier-hover);
+  border-color: var(--text-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.log-type {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--text-normal);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.log-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.log-entries-container {
+  margin: 16px 0;
+}
+
+.entries-header {
+  margin-bottom: 16px;
+  color: var(--text-normal);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.entries-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.entry-card {
+  background-color: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.entry-card:hover {
+  background-color: var(--background-modifier-hover);
+  border-color: var(--text-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.entry-date-button {
+  padding: 6px 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.entry-date-button:hover {
+  background-color: var(--text-accent);
+  color: var(--text-on-accent);
+  border-color: var(--text-accent);
+}
+
+.entry-title {
+  margin: 0 0 8px 0;
+  color: var(--text-normal);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.entry-content {
+  margin-top: 12px;
+}
+
+.entry-image {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.entry-image img, .log-entry-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  border: 2px solid var(--background-modifier-border);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.entry-image img:hover, .log-entry-image:hover {
+  transform: scale(1.05);
+  border-color: var(--text-accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.entry-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.logs-header {
+  margin-bottom: 16px;
+}
+
+.logs-title {
+  margin: 0 0 8px 0;
+  color: var(--text-normal);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.logs-description {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.logs-empty {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-muted);
+  font-style: italic;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+  border: 1px dashed var(--background-modifier-border);
+}
+
+.logs-back-button {
+  padding: 8px 16px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.logs-back-button:hover {
+  background-color: var(--background-modifier-hover);
+  border-color: var(--text-accent);
+  transform: translateX(-2px);
+}
+
+/* Mobile responsive for logs */
+@media (max-width: 768px) {
+  .entries-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .logs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .entry-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .entry-date-button {
+    align-self: flex-start;
+  }
+  
+  /* Smaller images on mobile */
+  .entry-image img, .log-entry-image {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+
